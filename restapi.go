@@ -1954,14 +1954,16 @@ func (s *Session) ChannelInvites(channelID string, options ...RequestOption) (st
 // ChannelInviteCreate creates a new invite for the given channel.
 // channelID   : The ID of a Channel
 // i           : An Invite struct with the values MaxAge, MaxUses and Temporary defined.
-func (s *Session) ChannelInviteCreate(channelID string, i Invite, options ...RequestOption) (st *Invite, err error) {
+func (s *Session) ChannelInviteCreate(channelID string, i Invite, targetType *int, targetApplicationID *string, options ...RequestOption) (st *Invite, err error) {
 
 	data := struct {
-		MaxAge    int  `json:"max_age"`
-		MaxUses   int  `json:"max_uses"`
-		Temporary bool `json:"temporary"`
-		Unique    bool `json:"unique"`
-	}{i.MaxAge, i.MaxUses, i.Temporary, i.Unique}
+		MaxAge              int     `json:"max_age"`
+		MaxUses             int     `json:"max_uses"`
+		Temporary           bool    `json:"temporary"`
+		Unique              bool    `json:"unique"`
+		TargetType          *int    `json:"target_type,omitempty"`
+		TargetApplicationID *string `json:"target_application_id,omitempty"`
+	}{i.MaxAge, i.MaxUses, i.Temporary, i.Unique, targetType, targetApplicationID}
 
 	body, err := s.RequestWithBucketID("POST", EndpointChannelInvites(channelID), data, EndpointChannelInvites(channelID), options...)
 	if err != nil {
